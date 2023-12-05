@@ -1,13 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, ObjectId } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
+import sequencePlugin from 'mongoose-sequence';
 import { IQuantification } from 'src/recipes/interfaces/quantification.interface';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
 @Schema()
 export class Recipe {
-  @Prop({ auto: true })
-  id: ObjectId;
+  @Prop({ unique: true, required: true })
+  _id: number;
 
   @Prop({ required: true })
   name: string;
@@ -32,3 +33,4 @@ export class Recipe {
 }
 
 export const RecipeSchema = SchemaFactory.createForClass(Recipe);
+RecipeSchema.plugin(sequencePlugin, { inc_field: '_id' });

@@ -7,7 +7,7 @@ export interface ISaveRecipe {
 }
 
 export interface IRecipe {
-  id: number;
+  _id?: number;
   name: string;
   description?: string;
   steps: string[];
