@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { IRecipe } from './interfaces/recipe.interface';
 import { Recipe } from './schemas/recipe.schema';
 import { SavedRecipe } from './schemas/savedRecipe.schema';
+import { RecipeCreateDto } from './dto/recipe-create.dto';
 
 @Injectable()
 export class RecipeService {
@@ -14,7 +14,7 @@ export class RecipeService {
     private savedRecipeModel: Model<SavedRecipe>,
   ) {}
 
-  async create(recipe: IRecipe): Promise<Recipe> {
+  async create(recipe: RecipeCreateDto): Promise<Recipe> {
     const createdRecipe = new this.recipeModel(recipe);
     return createdRecipe.save();
   }
@@ -23,7 +23,7 @@ export class RecipeService {
     ingredients?: string,
     page: number = 1,
     limit: number = 5,
-  ): Promise<IRecipe[]> {
+  ): Promise<Recipe[]> {
     const skip = (page - 1) * limit;
     // Handle no ingredients passed in
     if (!ingredients) {
@@ -47,9 +47,10 @@ export class RecipeService {
       .exec();
   }
 
-  async saveRecipe(recipeId: number, userId: number): Promise<string> {
+  async saveRecipe(recipeId: number, userId: number): Promise<SavedRecipe> {
     const savedRecipe = new this.savedRecipeModel({ recipeId, userId });
     await savedRecipe.save();
-    return 'Save recipe ' + savedRecipe.id + ' for user ' + savedRecipe.userId;
+    // return 'Save recipe ' + savedRecipe.id + ' for user ' + savedRecipe.userId;
+    return savedRecipe;
   }
 }

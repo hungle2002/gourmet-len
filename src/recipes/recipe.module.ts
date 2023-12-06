@@ -7,9 +7,17 @@ import { SavedRecipe, SavedRecipeSchema } from './schemas/savedRecipe.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Recipe.name, schema: RecipeSchema }]),
     MongooseModule.forFeature([
-      { name: SavedRecipe.name, schema: SavedRecipeSchema },
+      {
+        name: Recipe.name,
+        schema: RecipeSchema,
+      },
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: SavedRecipe.name,
+        schema: SavedRecipeSchema,
+      },
     ]),
   ],
   controllers: [RecipeController],

@@ -1,34 +1,25 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { Quantity } from '../dto/recipe-create.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export type RecipeDocument = HydratedDocument<Recipe>;
+export class Quantity {
+  name: string;
+  amount: number;
+  unit: string;
+}
 
-@Schema()
-export class Recipe {
-  @ApiProperty({
-    description: 'The id of the Recipe',
-    example: '1',
-  })
-  @IsNotEmpty()
-  @Prop({ unique: true, required: true, default: 1 })
-  id: number;
-
+export class RecipeCreateDto {
   @ApiProperty({
     description: 'The name of the Recipe',
     example: 'Spaghetti',
   })
   @IsNotEmpty()
-  @Prop({ required: true })
   name: string;
 
   @ApiPropertyOptional({
     description: 'The description of the Recipe',
     example: 'France food with special ingredient and typical taste',
   })
-  @Prop()
+  @IsString()
   description: string;
 
   @ApiProperty({
@@ -36,7 +27,6 @@ export class Recipe {
     example: ['1. Cut the meat', '2. Cook the meat', '3. Serve the meat'],
   })
   @IsNotEmpty()
-  @Prop([String])
   steps: string[];
 
   @ApiProperty({
@@ -48,7 +38,6 @@ export class Recipe {
     ],
   })
   @IsNotEmpty()
-  @Prop(Object)
   ingredients: Quantity[];
 
   @ApiProperty({
@@ -60,7 +49,6 @@ export class Recipe {
     ],
   })
   @IsNotEmpty()
-  @Prop(Object)
   nutrition: Quantity[];
 
   @ApiProperty({
@@ -69,7 +57,6 @@ export class Recipe {
   })
   @IsNotEmpty()
   @IsNumber()
-  @Prop({ required: true })
   cookingTime: number;
 
   @ApiProperty({
@@ -78,8 +65,5 @@ export class Recipe {
   })
   @IsNotEmpty()
   @IsNumber()
-  @Prop({ required: true })
   servings: number;
 }
-
-export const RecipeSchema = SchemaFactory.createForClass(Recipe);
