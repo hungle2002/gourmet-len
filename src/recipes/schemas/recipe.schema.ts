@@ -32,6 +32,15 @@ export class Recipe {
   description: string;
 
   @ApiProperty({
+    description: 'The illustration of the Recipe',
+    example:
+      'https://kurio-img.kurioapps.com/21/06/22/6c8221eb-f08d-4309-9e3c-8c1319a9b411.jpe',
+  })
+  @IsNotEmpty()
+  @Prop(String)
+  image: string;
+
+  @ApiProperty({
     description: 'The steps of the Recipe',
     example: ['1. Cut the meat', '2. Cook the meat', '3. Serve the meat'],
   })

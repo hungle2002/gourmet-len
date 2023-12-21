@@ -21,26 +21,27 @@ export class RecipeService {
 
   async getRecipes(
     ingredients?: string,
+    name?: string,
     page: number = 1,
     limit: number = 5,
   ): Promise<Recipe[]> {
     const skip = (page - 1) * limit;
-    // Handle no ingredients passed in
-    if (!ingredients) {
-      return this.recipeModel.find().skip(skip).limit(limit).exec();
-    }
 
-    // Split the ingredients string into an array
-    const ingredientsList = ingredients.split(',');
     return this.recipeModel
       .find({
-        ingredients: {
-          $elemMatch: {
-            name: {
-              $in: ingredientsList,
-            },
-          },
-        },
+        ...(ingredients
+          ? {
+              ingredients: {
+                $elemMatch: {
+                  name: {
+                    // Split the ingredients string into an array
+                    $in: ingredients?.split(','),
+                  },
+                },
+              },
+            }
+          : undefined),
+        ...(name ? { name: { $regex: name, $options: 'i' } } : undefined),
       })
       .skip(skip)
       .limit(limit)

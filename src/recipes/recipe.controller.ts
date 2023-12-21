@@ -46,6 +46,12 @@ export class RecipeController {
     description: 'Comma separated list of ingredients',
   })
   @ApiQuery({
+    name: 'name',
+    required: false,
+    type: String,
+    description: 'Recipe name',
+  })
+  @ApiQuery({
     name: 'page',
     required: false,
     type: Number,
@@ -68,10 +74,11 @@ export class RecipeController {
   })
   getRecipes(
     @Query('ingredients') ingredients: string,
+    @Query('name') name: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Recipe[]> {
-    return this.recipeService.getRecipes(ingredients, page, limit);
+    return this.recipeService.getRecipes(ingredients, name, page, limit);
   }
 
   @Post(':id/save')
