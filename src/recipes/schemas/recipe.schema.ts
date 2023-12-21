@@ -41,6 +41,14 @@ export class Recipe {
   image: string;
 
   @ApiProperty({
+    description: 'The rate of the Recipe',
+    example: 5,
+  })
+  @IsNotEmpty()
+  @Prop(Number)
+  rate: number;
+
+  @ApiProperty({
     description: 'The steps of the Recipe',
     example: ['1. Cut the meat', '2. Cook the meat', '3. Serve the meat'],
   })
