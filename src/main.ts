@@ -9,7 +9,7 @@ async function bootstrap() {
     .setTitle('Gourmet-len')
     .setDescription('Gourmet-len')
     .setVersion('1.0')
-    .addServer('https://gourmet-cos42158.b4a.run/', 'Deployed environment')
+    .addServer('https://gourmetlen-9vrbgbe6.b4a.run/', 'Deployed environment')
     .addServer('http://localhost:3000/', 'Local environment')
     .build();
   const document = SwaggerModule.createDocument(app, options);
