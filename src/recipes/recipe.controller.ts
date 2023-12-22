@@ -103,3 +103,29 @@ export class RecipeController {
     return this.recipeService.saveRecipe(id, userInfo.userId);
   }
 }
+
+@ApiTags('SavedRecipe')
+@Controller('saved-recipes')
+export class SavedRecipeController {
+  constructor(private readonly recipeService: RecipeService) {}
+
+  @Get()
+  @ApiQuery({
+    name: 'userId',
+    required: true,
+    type: Number,
+    description: 'Id of user',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The list of recipes has been successfully retrieved.',
+    type: [Recipe],
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Something went wrong with server. Please try again later!',
+  })
+  getRecipes(@Query('userId') userId: number): Promise<Recipe[]> {
+    return this.recipeService.getListSavedRecipeOfUser(userId);
+  }
+}

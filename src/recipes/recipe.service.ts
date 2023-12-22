@@ -15,7 +15,9 @@ export class RecipeService {
   ) {}
 
   async create(recipe: RecipeCreateDto): Promise<Recipe> {
-    const createdRecipe = new this.recipeModel(recipe);
+    const latestRecipe = await this.getLatestRecipe();
+    const insertRecipe = { ...recipe, id: latestRecipe.id + 1 };
+    const createdRecipe = new this.recipeModel(insertRecipe);
     return createdRecipe.save();
   }
 
@@ -48,10 +50,47 @@ export class RecipeService {
       .exec();
   }
 
+  async getLatestRecipe(): Promise<Recipe> {
+    return this.recipeModel.findOne({}).sort({ id: -1 }).limit(1).exec();
+  }
+
   async saveRecipe(recipeId: number, userId: number): Promise<SavedRecipe> {
-    const savedRecipe = new this.savedRecipeModel({ recipeId, userId });
-    await savedRecipe.save();
-    // return 'Save recipe ' + savedRecipe.id + ' for user ' + savedRecipe.userId;
-    return savedRecipe;
+    // find exist recipe
+    const existRecipe: Recipe = await this.recipeModel.findOne({
+      id: recipeId,
+    });
+    if (!existRecipe) {
+      console.log('Recipe not found');
+    }
+    // find exist saved recipe
+    const existSavedRecipe: SavedRecipe = await this.savedRecipeModel
+      .findOne({ userId })
+      .limit(1)
+      .exec();
+    if (!existSavedRecipe) {
+      const savedRecipe = new this.savedRecipeModel({
+        recipeIds: [recipeId],
+        userId,
+      });
+      await savedRecipe.save();
+      return savedRecipe;
+    }
+    if (existSavedRecipe.recipeIds.includes(recipeId)) {
+      return existSavedRecipe;
+    } else {
+      existSavedRecipe.recipeIds.push(recipeId);
+      await existSavedRecipe.save();
+      return existSavedRecipe;
+    }
+  }
+
+  async getListSavedRecipeOfUser(userId: number): Promise<Recipe[]> {
+    const savedRecipe: SavedRecipe = await this.savedRecipeModel
+      .findOne({ userId })
+      .exec();
+    if (savedRecipe.recipeIds.length === 0) {
+      return [];
+    }
+    return this.recipeModel.find({ id: { $in: savedRecipe.recipeIds } }).exec();
   }
 }

@@ -68,11 +68,10 @@ export class RecipeCreateDto {
 
   @ApiProperty({
     description: 'The estimated cooking time of the Recipe in minutes',
-    example: '60',
+    example: '60 mins',
   })
   @IsNotEmpty()
-  @IsNumber()
-  cookingTime: number;
+  cookingTime: string;
 
   @ApiProperty({
     description: 'The number of servings of the Recipe',

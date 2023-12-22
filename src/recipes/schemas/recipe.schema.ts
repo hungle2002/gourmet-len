@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Quantity } from '../dto/recipe-create.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
@@ -85,9 +85,9 @@ export class Recipe {
     example: '60',
   })
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   @Prop({ required: true })
-  cookingTime: number;
+  cookingTime: string;
 
   @ApiProperty({
     description: 'The number of servings of the Recipe',
