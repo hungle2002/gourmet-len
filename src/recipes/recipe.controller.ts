@@ -14,6 +14,7 @@ import { RecipeCreateDto } from './dto/recipe-create.dto';
 import { SavedRecipeCreateDto } from './dto/save-recipe.dto';
 import { Recipe } from './schemas/recipe.schema';
 import { SavedRecipe } from './schemas/savedRecipe.schema';
+import { RecipeDetail } from './schemas/recipeDetail.schema';
 @ApiTags('Recipe')
 @Controller('recipes')
 export class RecipeController {
@@ -79,6 +80,34 @@ export class RecipeController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ): Promise<Recipe[]> {
     return this.recipeService.getRecipes(ingredients, name, page, limit);
+  }
+
+  @Get(':id')
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID of recipe want to get',
+  })
+  @ApiQuery({
+    name: 'userId',
+    required: false,
+    type: Number,
+    description: 'ID of user',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The detail of recipe has been successfully retrieved.',
+    type: RecipeDetail,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Something went wrong with server. Please try again later!',
+  })
+  getRecipe(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('userId') userId: number,
+  ): Promise<RecipeDetail> {
+    return this.recipeService.getRecipe(id, userId);
   }
 
   @Post(':id/save')

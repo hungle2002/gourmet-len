@@ -3,6 +3,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RecipeController, SavedRecipeController } from './recipe.controller';
 import { RecipeService } from './recipe.service';
 import { Recipe, RecipeSchema } from './schemas/recipe.schema';
+import {
+  RecipeDetail,
+  RecipeDetailSchema,
+} from './schemas/recipeDetail.schema';
 import { SavedRecipe, SavedRecipeSchema } from './schemas/savedRecipe.schema';
 
 @Module({
@@ -17,6 +21,12 @@ import { SavedRecipe, SavedRecipeSchema } from './schemas/savedRecipe.schema';
       {
         name: SavedRecipe.name,
         schema: SavedRecipeSchema,
+      },
+    ]),
+    MongooseModule.forFeature([
+      {
+        name: RecipeDetail.name,
+        schema: RecipeDetailSchema,
       },
     ]),
   ],

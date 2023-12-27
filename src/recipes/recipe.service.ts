@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Recipe } from './schemas/recipe.schema';
+import { RecipeDetail } from './schemas/recipeDetail.schema';
 import { SavedRecipe } from './schemas/savedRecipe.schema';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
 
@@ -48,6 +49,17 @@ export class RecipeService {
       .skip(skip)
       .limit(limit)
       .exec();
+  }
+
+  async getRecipe(id: number, userId: number): Promise<RecipeDetail> {
+    const recipe: Recipe = await this.recipeModel.findOne({ id }).lean().exec();
+    if (userId) {
+      const userSavedRecipe: SavedRecipe = await this.savedRecipeModel
+        .findOne({ userId })
+        .exec();
+      return { ...recipe, isSaved: userSavedRecipe?.recipeIds.includes(id) };
+    }
+    return { ...recipe, isSaved: false };
   }
 
   async getLatestRecipe(): Promise<Recipe> {
