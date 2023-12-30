@@ -90,7 +90,7 @@ export class RecipeService {
     if (existSavedRecipe.recipeIds.includes(recipeId)) {
       return existSavedRecipe;
     } else {
-      existSavedRecipe.recipeIds.push(recipeId);
+      existSavedRecipe.recipeIds.unshift(recipeId);
       await existSavedRecipe.save();
       return existSavedRecipe;
     }
@@ -103,6 +103,11 @@ export class RecipeService {
     if (savedRecipe.recipeIds.length === 0) {
       return [];
     }
-    return this.recipeModel.find({ id: { $in: savedRecipe.recipeIds } }).exec();
+    const listRetrieveRecipe: Recipe[] = await this.recipeModel
+      .find({ id: { $in: savedRecipe.recipeIds } })
+      .exec();
+    return savedRecipe.recipeIds.map(
+      (e) => listRetrieveRecipe.filter((recipe) => recipe.id === e)[0],
+    );
   }
 }
