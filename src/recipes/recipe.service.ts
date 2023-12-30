@@ -5,6 +5,7 @@ import { Recipe } from './schemas/recipe.schema';
 import { RecipeDetail } from './schemas/recipeDetail.schema';
 import { SavedRecipe } from './schemas/savedRecipe.schema';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
+import { SavedRecipeDeleteDto } from './dto/save-recipe.dto';
 
 @Injectable()
 export class RecipeService {
@@ -109,5 +110,23 @@ export class RecipeService {
     return savedRecipe.recipeIds.map(
       (e) => listRetrieveRecipe.filter((recipe) => recipe.id === e)[0],
     );
+  }
+
+  async deleteSavedRecipeOfUser(
+    deleteInfo: SavedRecipeDeleteDto,
+  ): Promise<number> {
+    const savedRecipe: SavedRecipe = await this.savedRecipeModel
+      .findOne({ userId: deleteInfo.userId })
+      .exec();
+
+    await this.savedRecipeModel.updateOne(
+      { userId: deleteInfo.userId },
+      {
+        recipeIds: savedRecipe.recipeIds.filter(
+          (e) => e !== deleteInfo.recipeId,
+        ),
+      },
+    );
+    return deleteInfo.userId;
   }
 }

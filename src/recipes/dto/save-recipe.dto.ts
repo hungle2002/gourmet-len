@@ -10,3 +10,21 @@ export class SavedRecipeCreateDto {
   @IsNumber()
   userId: number;
 }
+
+export class SavedRecipeDeleteDto {
+  @ApiProperty({
+    description: 'The id of the user want to save the recipe',
+    example: '10',
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  userId: number;
+
+  @ApiProperty({
+    description: 'The id of the recipe user want to delete',
+    example: '2',
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  recipeId: number;
+}

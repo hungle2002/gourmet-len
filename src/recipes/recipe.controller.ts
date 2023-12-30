@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -11,7 +12,10 @@ import {
 import { ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RecipeService } from './recipe.service';
 import { RecipeCreateDto } from './dto/recipe-create.dto';
-import { SavedRecipeCreateDto } from './dto/save-recipe.dto';
+import {
+  SavedRecipeCreateDto,
+  SavedRecipeDeleteDto,
+} from './dto/save-recipe.dto';
 import { Recipe } from './schemas/recipe.schema';
 import { SavedRecipe } from './schemas/savedRecipe.schema';
 import { RecipeDetail } from './schemas/recipeDetail.schema';
@@ -156,5 +160,19 @@ export class SavedRecipeController {
   })
   getRecipes(@Query('userId') userId: number): Promise<Recipe[]> {
     return this.recipeService.getListSavedRecipeOfUser(userId);
+  }
+
+  @Delete()
+  @ApiResponse({
+    status: 200,
+    description: 'The list of recipes has been successfully retrieved.',
+    type: Number,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Something went wrong with server. Please try again later!',
+  })
+  deleteSaveRecipe(@Body() deleteInfo: SavedRecipeDeleteDto): Promise<number> {
+    return this.recipeService.deleteSavedRecipeOfUser(deleteInfo);
   }
 }
